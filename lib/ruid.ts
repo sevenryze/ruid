@@ -1,6 +1,8 @@
 ﻿import { StringDecoder } from "string_decoder";
-// tslint:disable-next-line:no-submodule-imports
+// tslint:disable-next-line: no-submodule-imports
 import uuidv1 from "uuid/v1";
+// tslint:disable-next-line: no-submodule-imports
+import uuidv4 from "uuid/v4";
 import { isUUID } from "validator";
 
 /**
@@ -30,6 +32,10 @@ export class Ruid {
    */
   public static getUuidV1() {
     return uuidv1();
+  }
+
+  public static getUuidV4() {
+    return uuidv4();
   }
 
   public fromUuid(uuid: string) {
@@ -72,16 +78,11 @@ export class Ruid {
       this.ruidString = ruidString.toLowerCase();
     } else {
       // TODO: 验证ruidString是否合法
-      if (
-        ruidStringOrRuidBuffer &&
-        typeof ruidStringOrRuidBuffer !== "string"
-      ) {
+      if (ruidStringOrRuidBuffer && typeof ruidStringOrRuidBuffer !== "string") {
         throw new Error(`Invliad string type reference RUID`);
       }
 
-      const ruidString = ruidStringOrRuidBuffer
-        ? ruidStringOrRuidBuffer
-        : this.convertUuidToRuid(uuidv1());
+      const ruidString = ruidStringOrRuidBuffer ? ruidStringOrRuidBuffer : this.convertUuidToRuid(uuidv1());
 
       this.ruidString = ruidString.toLowerCase();
       this.ruidBuffer = Buffer.from(ruidString, "hex");
@@ -96,12 +97,6 @@ export class Ruid {
       throw new Error(`Invliad reference UUID.`);
     }
 
-    return (
-      uuid.slice(14, 18) +
-      uuid.slice(9, 13) +
-      uuid.slice(0, 8) +
-      uuid.slice(19, 23) +
-      uuid.slice(24)
-    );
+    return uuid.slice(14, 18) + uuid.slice(9, 13) + uuid.slice(0, 8) + uuid.slice(19, 23) + uuid.slice(24);
   }
 }

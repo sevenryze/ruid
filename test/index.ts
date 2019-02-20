@@ -1,3 +1,4 @@
+import { isUUID } from "validator";
 import { Ruid } from "../lib";
 
 describe(`Ruid`, () => {
@@ -34,5 +35,17 @@ describe(`Ruid`, () => {
     console.log(`Ruid: ${ruid.toString()}.`);
 
     expect(ruid.toString()).toBeDefined();
+  });
+
+  it(`Could get uuid v1 from static method`, () => {
+    const uuid = Ruid.getUuidV1();
+
+    expect(isUUID(uuid)).toBeTruthy();
+  });
+
+  it(`Could get uuid v4 from static method`, () => {
+    const uuid = Ruid.getUuidV4();
+
+    expect(isUUID(uuid, 4)).toBeTruthy();
   });
 });
