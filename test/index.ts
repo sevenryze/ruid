@@ -48,4 +48,14 @@ describe(`Ruid`, () => {
 
     expect(isUUID(uuid, 4)).toBeTruthy();
   });
+
+  it(`Could use static transform method`, () => {
+    const ruid = new Ruid();
+
+    const ruidBuffer = Ruid.transformToBuffer(ruid.toString());
+    const ruidString = Ruid.transformToString(ruid.toBuffered());
+
+    expect(ruidString).toEqual(ruid.toString());
+    expect(ruidBuffer).toEqual(ruid.toBuffered());
+  });
 });

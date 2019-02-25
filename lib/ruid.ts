@@ -3,10 +3,10 @@
 import uuidv1 from "uuid/v1";
 // tslint:disable-next-line: no-submodule-imports
 import uuidv4 from "uuid/v4";
-import { isUUID } from "validator";
+import { isHexadecimal, isUUID } from "validator";
 
 /**
- * 优化版的全局唯一标识符
+ * Optimized Global Unique ID for DB store and query.
  *
  * ```
  * 优化前：
@@ -28,18 +28,26 @@ import { isUUID } from "validator";
  */
 export class Ruid {
   /**
-   * 得到一个V1版本的UUID
+   * Get a v1 uuid.
    */
   public static getUuidV1() {
-    return uuidv1();
+    return uuidv1().toUpperCase();
   }
 
   public static getUuidV4() {
-    return uuidv4();
+    return uuidv4().toUpperCase();
+  }
+
+  public static transformToBuffer(id: string): Buffer {
+    return Ruid.encodeIdString(id);
+  }
+
+  public static transformToString(id: Buffer): string {
+    return Ruid.decodeIdBuffer(id);
   }
 
   public fromUuid(uuid: string) {
-    const ruidString = this.convertUuidToRuid(uuid);
+    const ruidString = Ruid.convertUuidToRuid(uuid);
 
     return new Ruid(ruidString);
   }
@@ -61,42 +69,54 @@ export class Ruid {
   }
 
   /**
-   * @param ruidStringOrRuidBuffer The reference Ruid or buffered Ruid
+   * @param ruidStringOrRuidBuffer The reference Ruid, could be string or buffer type.
    */
   constructor(ruidStringOrRuidBuffer?: string | Buffer) {
     if (Buffer.isBuffer(ruidStringOrRuidBuffer)) {
-      const decoder = new StringDecoder("hex");
+      const ruidString = Ruid.decodeIdBuffer(ruidStringOrRuidBuffer);
 
-      const ruidString = decoder.end(ruidStringOrRuidBuffer);
-
-      // TODO: 验证ruidString是否合法
-      if (false) {
-        throw new Error(`Invalid buffer type reference RUID`);
+      if (Ruid.checkRuidString(ruidString)) {
+        throw new Error(`Invalid buffer type reference RUID.`);
       }
 
       this.ruidBuffer = ruidStringOrRuidBuffer;
-      this.ruidString = ruidString.toLowerCase();
+      this.ruidString = ruidString;
     } else {
-      // TODO: 验证ruidString是否合法
-      if (ruidStringOrRuidBuffer && typeof ruidStringOrRuidBuffer !== "string") {
-        throw new Error(`Invliad string type reference RUID`);
+      if (ruidStringOrRuidBuffer && Ruid.checkRuidString(ruidStringOrRuidBuffer)) {
+        throw new Error(`Invliad string type reference RUID.`);
       }
 
-      const ruidString = ruidStringOrRuidBuffer ? ruidStringOrRuidBuffer : this.convertUuidToRuid(uuidv1());
+      const ruidString = ruidStringOrRuidBuffer ? ruidStringOrRuidBuffer : Ruid.convertUuidToRuid(uuidv1());
 
-      this.ruidString = ruidString.toLowerCase();
+      this.ruidString = ruidString.toUpperCase();
       this.ruidBuffer = Buffer.from(ruidString, "hex");
     }
   }
 
-  private readonly ruidString: string;
-  private readonly ruidBuffer: Buffer;
+  private static decodeIdBuffer(id: Buffer): string {
+    const decoder = new StringDecoder("hex");
 
-  private convertUuidToRuid(uuid: string): string {
+    return decoder.end(id).toUpperCase();
+  }
+
+  private static encodeIdString(id: string): Buffer {
+    return Buffer.from(id, "hex");
+  }
+
+  private static convertUuidToRuid(uuid: string): string {
     if (!isUUID(uuid)) {
       throw new Error(`Invliad reference UUID.`);
     }
 
-    return uuid.slice(14, 18) + uuid.slice(9, 13) + uuid.slice(0, 8) + uuid.slice(19, 23) + uuid.slice(24);
+    const ruid = uuid.slice(14, 18) + uuid.slice(9, 13) + uuid.slice(0, 8) + uuid.slice(19, 23) + uuid.slice(24);
+
+    return ruid.toUpperCase();
   }
+
+  private static checkRuidString(ruidString: string) {
+    return ruidString === "string" && ruidString.length === 32 && isHexadecimal(ruidString);
+  }
+
+  private readonly ruidString: string;
+  private readonly ruidBuffer: Buffer;
 }
