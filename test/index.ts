@@ -58,4 +58,11 @@ describe(`Ruid`, () => {
     expect(ruidString).toEqual(ruid.toString());
     expect(ruidBuffer).toEqual(ruid.toBuffered());
   });
+
+  it(`Could check ruid string validation.`, () => {
+    const ruid = new Ruid();
+
+    expect(Ruid.checkRuidString(ruid.toString())).toBe(true);
+    expect(Ruid.checkRuidString(ruid.toSqlString())).toBe(false);
+  });
 });

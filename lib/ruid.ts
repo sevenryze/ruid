@@ -9,7 +9,7 @@ import { isHexadecimal, isUUID } from "validator";
  * Optimized Global Unique ID for DB store and query.
  *
  * ```
- * 优化前：
+ * Before optimize：
  *
  * 58e0a7d7 - eebc    -  11d8     -  9669     -  0800200c9a66
  *
@@ -17,9 +17,10 @@ import { isHexadecimal, isUUID } from "validator";
  *
  * 0 -> 7     9 -> 12    14 -> 17    19 -> 22    24 -> 35
  *
- * 注意：index包含dash，一共32个十六进制数字
+ * Attention:
+ *  The indices of this diagram include `dash (-)` symbols.
  *
- * 优化后：
+ * After optimize：
  *
  * time_high  time_mid  time_low    clockseq   node
  *
@@ -44,6 +45,10 @@ export class Ruid {
 
   public static transformToString(id: Buffer): string {
     return Ruid.decodeIdBuffer(id);
+  }
+
+  public static checkRuidString(ruid: string) {
+    return typeof ruid === "string" && ruid.length === 32 && isHexadecimal(ruid);
   }
 
   public fromUuid(uuid: string) {
@@ -75,14 +80,14 @@ export class Ruid {
     if (Buffer.isBuffer(ruidStringOrRuidBuffer)) {
       const ruidString = Ruid.decodeIdBuffer(ruidStringOrRuidBuffer);
 
-      if (Ruid.checkRuidString(ruidString)) {
+      if (!Ruid.checkRuidString(ruidString)) {
         throw new Error(`Invalid buffer type reference RUID.`);
       }
 
       this.ruidBuffer = ruidStringOrRuidBuffer;
       this.ruidString = ruidString;
     } else {
-      if (ruidStringOrRuidBuffer && Ruid.checkRuidString(ruidStringOrRuidBuffer)) {
+      if (ruidStringOrRuidBuffer && !Ruid.checkRuidString(ruidStringOrRuidBuffer)) {
         throw new Error(`Invliad string type reference RUID.`);
       }
 
@@ -111,10 +116,6 @@ export class Ruid {
     const ruid = uuid.slice(14, 18) + uuid.slice(9, 13) + uuid.slice(0, 8) + uuid.slice(19, 23) + uuid.slice(24);
 
     return ruid.toUpperCase();
-  }
-
-  private static checkRuidString(ruidString: string) {
-    return ruidString === "string" && ruidString.length === 32 && isHexadecimal(ruidString);
   }
 
   private readonly ruidString: string;
