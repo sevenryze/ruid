@@ -1,8 +1,16 @@
 module.exports = {
-  transform: {
-    "^.+\\.(t|j)sx?$": "ts-jest"
-  },
+  preset: "ts-jest",
   testEnvironment: "node",
-  testRegex: `^.*\/test\/(?!.*\.d\.tsx?$).*\.tsx?$`,
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]
+  bail: true,
+  collectCoverageFrom: ["./lib/**/*.ts"],
+  coveragePathIgnorePatterns: ["/node_modules/"],
+  coverageThreshold: {
+    global: {
+      branches: 39,
+      functions: 20,
+      lines: 60,
+      statements: 60,
+    },
+  },
+  testMatch: ["**/?(*.)+(spec).ts?(x)"],
 };

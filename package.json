@@ -1,6 +1,6 @@
 {
   "name": "@sevenryze/ruid",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": false,
   "main": "dist/lib/index.js",
   "files": [
@@ -8,24 +8,54 @@
     "typings/"
   ],
   "scripts": {
-    "start": "towerflow start",
-    "production": "towerflow production",
-    "test": "towerflow test --env=node",
-    "publish-to-npm": "npm run test && npm run production && npm publish --access public",
-    "generate-config": "towerflow assistant --generate-config",
-    "remove-config": "towerflow assistant --remove-config"
+    "tsc-watch": "tsc -w --incremental -p .",
+    "tsc-compile": "tsc -p .",
+    "jest-test": "jest --ci --bail",
+    "jest-test:coverage": "jest -w=7 --ci --bail --coverage",
+    "jest-test:only-e2e": "jest --bail --testNamePattern=\"E2E:\"",
+    "jest-test:only-unit": "jest --bail --testNamePattern=\"Unit:\"",
+    "jest-test:only-integration": "jest --bail --testNamePattern=\"Integration:\"",
+    "format": "prettier --write \"{src,test}/**/*.ts\"",
+    "lint": "eslint --ext .ts \"{src,test}/**/*.ts\"",
+    "lint-only-show-errors": "eslint --ext .ts \"{src,test}/**/*.ts\" --quiet",
+    "lint-fix": "eslint --fix --ext .ts \"{src,test}/**/*.ts\"",
+    "publish-to-npm": "npm run tsc-compile && npm run jest-test && npm publish --access public"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "eslint --fix --ext .ts \"{src,test}/**/*.ts\"",
+      "prettier --write \"{src,test}/**/*.ts\"",
+      "git add"
+    ]
   },
   "towerflow": {
     "type": "node-lib"
   },
   "devDependencies": {
-    "towerflow": "^1.3.18"
+    "@types/jest": "^25.1.2",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.1",
+    "jest": "^25.1.0",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.2.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@types/node": "^10.12.27",
-    "@types/uuid": "^3.4.4",
-    "@types/validator": "^10.9.0",
-    "uuid": "^3.3.2",
-    "validator": "^10.11.0"
+    "@types/node": "^13.7.0",
+    "@types/uuid": "^3.4.7",
+    "@types/validator": "^12.0.1",
+    "uuid": "^3.4.0",
+    "validator": "^12.2.0"
   }
 }

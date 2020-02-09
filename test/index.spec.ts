@@ -1,4 +1,4 @@
-import { isUUID } from "validator";
+import validator from "validator";
 import { Ruid } from "../lib";
 
 describe(`Ruid`, () => {
@@ -40,13 +40,13 @@ describe(`Ruid`, () => {
   it(`Could get uuid v1 from static method`, () => {
     const uuid = Ruid.getUuidV1();
 
-    expect(isUUID(uuid)).toBeTruthy();
+    expect(validator.isUUID(uuid)).toBeTruthy();
   });
 
   it(`Could get uuid v4 from static method`, () => {
     const uuid = Ruid.getUuidV4();
 
-    expect(isUUID(uuid, 4)).toBeTruthy();
+    expect(validator.isUUID(uuid, 4)).toBeTruthy();
   });
 
   it(`Could use static transform method`, () => {
