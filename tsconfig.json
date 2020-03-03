@@ -2,8 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2020",
-    "lib": ["es2020"],
+    "target": "es2019",
+    "lib": ["es2019"],
     "forceConsistentCasingInFileNames": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -17,9 +17,9 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "rootDir": ".",
+    "rootDir": "lib",
     "typeRoots": ["./node_modules/@types", "./typings"],
     "outDir": "dist"
   },
-  "include": ["src", "test", "typings"]
+  "include": ["lib", "typings"]
 }
