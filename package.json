@@ -1,6 +1,6 @@
 {
   "name": "@sevenryze/ruid",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "private": false,
   "description": "The optimised primary kep generator for Database, based on UUID and cluster safe.",
   "repository": {
