@@ -1,7 +1,6 @@
 ﻿import { StringDecoder } from "string_decoder";
-import uuidv1 from "uuid/v1";
-import uuidv4 from "uuid/v4";
 import validator from "validator";
+import { v1 as uuidv1, v4 as uuidv4 } from "uuid";
 
 /**
  * Optimized Global Unique ID for DB store and query.
@@ -20,9 +19,10 @@ import validator from "validator";
  *
  * After optimize：
  *
+ * 11d8   -   eebc    - 58e0a7d7  - 9669     - 0800200c9a66
+ *
  * time_high  time_mid  time_low    clockseq   node
  *
- * 11d8   -   eebc    - 58e0a7d7  - 9669     - 0800200c9a66
  * ```
  */
 export class Ruid {
@@ -60,6 +60,13 @@ export class Ruid {
 
   public toString() {
     return this.ruidString;
+  }
+
+  public toFriendlyString() {
+    return `${this.ruidString.slice(0, 4)}-${this.ruidString.slice(4, 8)}-${this.ruidString.slice(
+      8,
+      16
+    )}-${this.ruidString.slice(16, 20)}-${this.ruidString.slice(20, 32)}`;
   }
 
   public toJSON() {

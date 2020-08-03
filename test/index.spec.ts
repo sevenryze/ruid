@@ -65,4 +65,10 @@ describe(`Ruid`, () => {
     expect(Ruid.checkRuidString(ruid.toString())).toBe(true);
     expect(Ruid.checkRuidString(ruid.toSqlString())).toBe(false);
   });
+
+  it(`Could get friendly RUID string`, () => {
+    const ruid = new Ruid(`11d8eebc58e0a7d796690800200c9a66`);
+
+    expect(ruid.toFriendlyString()).toEqual(`11d8-eebc-58e0a7d7-9669-0800200c9a66`.toUpperCase());
+  });
 });
