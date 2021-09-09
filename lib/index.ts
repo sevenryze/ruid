@@ -48,8 +48,41 @@ export class Ruid {
     return Ruid.decodeIdBuffer(id);
   }
 
+  /**
+   * Check if the passing string is a valid RUID.
+   */
   public static checkRuidString(ruid: string) {
     return typeof ruid === "string" && ruid.length === 32 && validator.isHexadecimal(ruid);
+  }
+
+  /**
+   * If target should come before itself when sorted.
+   */
+  public isAfter(ruid: Ruid): boolean {
+    const passingRuidBuffer = ruid.toBuffered();
+
+    const result = this.ruidBuffer.compare(passingRuidBuffer);
+    return result === 1;
+  }
+
+  /**
+   * If target should come before itself when sorted.
+   */
+  public isBefore(ruid: Ruid): boolean {
+    const passingRuidBuffer = ruid.toBuffered();
+
+    const result = this.ruidBuffer.compare(passingRuidBuffer);
+    return result === -1;
+  }
+
+  /**
+   * If target is the same as itself when sorted.
+   */
+  public isEqual(ruid: Ruid): boolean {
+    const passingRuidBuffer = ruid.toBuffered();
+
+    const result = this.ruidBuffer.compare(passingRuidBuffer);
+    return result === 0;
   }
 
   public fromUuid(uuid: string) {
@@ -62,6 +95,9 @@ export class Ruid {
     return this.ruidString;
   }
 
+  /**
+   * Convert RUID to user friendly format.
+   */
   public toFriendlyString() {
     return `${this.ruidString.slice(0, 4)}-${this.ruidString.slice(4, 8)}-${this.ruidString.slice(
       8,

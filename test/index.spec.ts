@@ -71,4 +71,25 @@ describe(`Ruid`, () => {
 
     expect(ruid.toFriendlyString()).toEqual(`11d8-eebc-58e0a7d7-9669-0800200c9a66`.toUpperCase());
   });
+
+  it("Could get sort relation", async () => {
+    const ruid1 = new Ruid();
+
+    await sleep(1000);
+
+    const ruid2 = new Ruid();
+    const ruid3 = new Ruid(ruid2.toString());
+
+    expect(ruid1.isBefore(ruid2)).toEqual(true);
+    expect(ruid1.isAfter(ruid2)).toEqual(false);
+
+    expect(ruid2.isAfter(ruid1)).toEqual(true);
+    expect(ruid2.isBefore(ruid1)).toEqual(false);
+
+    expect(ruid2.isEqual(ruid3)).toEqual(true);
+  });
 });
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
